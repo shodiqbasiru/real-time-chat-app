@@ -20,12 +20,12 @@ export function AppSidebar() {
   const items = [
     {
       title: "Home",
-      url: "#",
+      url: "/",
       icon: Home,
     },
     {
       title: "Chat",
-      url: "#",
+      url: "/chat",
       icon: MessageCircle,
     },
     {
