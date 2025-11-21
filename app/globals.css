@@ -158,19 +158,36 @@ oklch(72.77% 0.170 34.34)
   }
 }
 
-@utility scrollbar {
+@utility scrollbar-hidden {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+
   &::-webkit-scrollbar {
     width: 8px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 9999px;
   }
   &::-webkit-scrollbar-track {
     background: transparent;
   }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+    transition: background 0.3s ease;
+  }
+}
 
-  /* Firefox */
+@utility scrollbar-visible {
   scrollbar-width: thin;
-  scrollbar-color: var(--primary) transparent;
+  scrollbar-color: oklch(62.31% 0.173 279.74) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: oklch(62.31% 0.173 279.74);
+    border-radius: 9999px;
+    transition: background 0.3s ease;
+  }
 }

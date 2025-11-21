@@ -1,7 +1,10 @@
+"use client";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
 
 const users = [
   {
@@ -77,16 +80,53 @@ const users = [
 ];
 
 export default function AppListuser() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling(true);
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 1000);
+    };
+
+    const scrollElement = scrollRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (scrollElement) {
+        scrollElement.removeEventListener("scroll", handleScroll);
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <Card className="w-full max-w-sm h-full flex flex-col pb-4">
-      <CardHeader className="pt-4 text-xl font-bold flex items-center w-full ">
-        <h2>List User</h2>
-        <Users size="24px" />
+      <CardHeader className="pt-4 pb-2 flex flex-row items-center justify-between">
+        <h2 className="text-xl font-bold">List User</h2>
+        <Users size={24} />
       </CardHeader>
-      <CardContent className="space-y-3 overflow-y-auto scrollbar flex-1 mr-2">
+      <CardContent
+        ref={scrollRef}
+        className={`space-y-3 overflow-y-auto flex-1 mr-2 ${
+          isScrolling ? "scrollbar-visible" : "scrollbar-hidden"
+        }`}
+      >
         {users.map((user) => (
           <div key={user.id} className="flex gap-3 items-center">
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <Image
                 src={user.avatar}
                 alt={user.name}
@@ -100,8 +140,8 @@ export default function AppListuser() {
                 }`}
               />
             </div>
-            <div className="flex-1">
-              <p className="font-medium text-sm">{user.name}</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-sm truncate">{user.name}</p>
               <Badge
                 variant={user.isOnline ? "default" : "secondary"}
                 className={`text-xs mt-1 ${
