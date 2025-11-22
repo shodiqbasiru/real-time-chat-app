@@ -13,7 +13,6 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { AppInfobar } from "@/components/app-infobar";
 
 const usersData: User[] = [
   {
