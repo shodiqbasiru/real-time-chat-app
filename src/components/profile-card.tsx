@@ -1,12 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit } from "lucide-react";
+import { Edit, Mail, PhoneCall } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { SocialIcon } from "react-social-icons/component";
 import "react-social-icons/instagram";
 import "react-social-icons/github";
+import { CurrentUser } from "@/types/user";
 
 interface ProfileCardProps {
   className?: string;
@@ -20,7 +21,7 @@ export const ProfileCard = ({ className, currentUser }: ProfileCardProps) => (
       <div className="flex flex-col gap-4">
         <div className="relative mx-auto">
           <Image
-            src={currentUser.avatar}
+            src="https://i.pinimg.com/474x/15/e4/bf/15e4bf313c319f9d601c6209b76abc76.jpg"
             alt={currentUser.name}
             width={250}
             height={250}
@@ -39,7 +40,16 @@ export const ProfileCard = ({ className, currentUser }: ProfileCardProps) => (
                   {currentUser.isOnline ? "Online" : "Offline"}
                 </Badge>
               </div>
-
+              <div className="flex gap-4">
+                <div className="flex items-center gap-2 text-md">
+                  <PhoneCall size="16" />
+                  <span>{currentUser.phoneNumber}</span>
+                </div>
+                <div className="flex items-center gap-2 text-md">
+                  <Mail size="16" />
+                  <span>{currentUser.email}</span>
+                </div>
+              </div>
               <p className="text-sm text-muted-foreground">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto
                 impedit culpa cupiditate distinctio.
@@ -48,18 +58,18 @@ export const ProfileCard = ({ className, currentUser }: ProfileCardProps) => (
 
             <Button size="icon" asChild>
               <Link href="/settings">
-                <Edit size={18} />
+                <Edit size={16} />
               </Link>
             </Button>
           </div>
 
-          <div className="flex justify-end items-center gap-4 pt-4">
+          <div className="flex justify-end items-center gap-4 pt-4 text-md">
             <a href="#" className="flex items-center gap-2" target="_blank">
               <SocialIcon
                 as="div"
                 network="instagram"
                 label="instagram.user"
-                style={{ width: "35px", height: "35px" }}
+                style={{ width: "24px", height: "24px" }}
               />
               <span>instagram.user</span>
             </a>
@@ -69,7 +79,7 @@ export const ProfileCard = ({ className, currentUser }: ProfileCardProps) => (
                 as="div"
                 network="github"
                 label="github.user"
-                style={{ width: "35px", height: "35px" }}
+                style={{ width: "24px", height: "24px" }}
               />
               <span>github.user</span>
             </a>

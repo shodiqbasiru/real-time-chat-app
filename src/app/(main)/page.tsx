@@ -1,21 +1,22 @@
 "use client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Image from "next/image";
-import "react-social-icons/instagram";
-import "react-social-icons/github";
 import { ProfileCard } from "@/components/profile-card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 
+import { useAuth } from "@/hooks/useAuth";
+
+import Image from "next/image";
+import Link from "next/link";
+
+import "react-social-icons/instagram";
+import "react-social-icons/github";
+
 export default function Page() {
-  const currentUser = {
-    name: "John Doe",
-    avatar:
-      "https://i.pinimg.com/474x/15/e4/bf/15e4bf313c319f9d601c6209b76abc76.jpg",
-    email: "john.doe@example.com",
-    isOnline: true,
-  };
+  const { getCurrentUserQuery } = useAuth();
+
+  const currentUser = getCurrentUserQuery.data?.data;
+  console.log(currentUser);
 
   const recentActivity = [
     {
@@ -89,7 +90,7 @@ export default function Page() {
           {/* Welcome */}
           <div className="space-y-2 flex flex-col justify-center items-center col-span-1 row-span-1">
             <h1 className="text-3xl font-bold">
-              Welcome back, {currentUser.name}! 👋
+              Welcome back, {currentUser?.name}! 👋
             </h1>
             <p className="text-muted-foreground">
               Here&apos;s what&apos;s happening with your conversations today.

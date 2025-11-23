@@ -11,3 +11,10 @@ export type User = {
   unreadCount: number;
   messages?: Message[];
 };
+
+export type CurrentUser = {
+  id: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+};

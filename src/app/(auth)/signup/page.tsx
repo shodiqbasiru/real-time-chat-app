@@ -18,36 +18,33 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeOff, MessageCircle } from "lucide-react";
+import { Eye, EyeOff, MessageCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  phone: z.string(),
-  email: z.string(),
-  password: z.string(),
-  confirmPassword: z.string(),
-});
+import { useAuthentication } from "@/hooks/useAuthForm";
 
 export default function Page() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const {
+    handleRegister,
+    setShowPassword,
+    setShowConfirmPassword,
+    showPassword,
+    showConfirmPassword,
+    registerMutation,
+    formRegisterSchema,
+  } = useAuthentication();
+
+  const form = useForm<z.infer<typeof formRegisterSchema>>({
+    resolver: zodResolver(formRegisterSchema),
     defaultValues: {
       username: "",
-      phone: "",
+      phoneNumber: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-  };
 
   return (
     <div className="h-full w-full flex justify-center items-center">
@@ -69,7 +66,10 @@ export default function Page() {
 
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(handleRegister)}
+              className="space-y-4"
+            >
               {/* Username */}
               <FormField
                 control={form.control}
@@ -81,7 +81,7 @@ export default function Page() {
                         className="bg-transparent h-10 border border-border/50 rounded"
                         placeholder="Username"
                         {...field}
-                        // disabled={isLoading}
+                        disabled={registerMutation.isPending}
                       />
                     </FormControl>
                     <FormMessage />
@@ -92,7 +92,7 @@ export default function Page() {
               {/* Phone */}
               <FormField
                 control={form.control}
-                name="phone"
+                name="phoneNumber"
                 render={({ field }) => (
                   <FormItem className="text-primary-foreground">
                     <FormControl>
@@ -101,7 +101,7 @@ export default function Page() {
                         placeholder="Phone Number"
                         type="tel"
                         {...field}
-                        // disabled={isLoading}
+                        disabled={registerMutation.isPending}
                       />
                     </FormControl>
                     <FormMessage />
@@ -121,7 +121,7 @@ export default function Page() {
                         placeholder="Email"
                         type="email"
                         {...field}
-                        // disabled={isLoading}
+                        disabled={registerMutation.isPending}
                       />
                     </FormControl>
                     <FormMessage />
@@ -140,23 +140,26 @@ export default function Page() {
                         <Input
                           className="bg-transparent h-10 border border-border/50 rounded"
                           placeholder="Password"
-                          // type={showPassword ? "text" : "password"}
+                          type={showPassword ? "text" : "password"}
                           {...field}
-                          // disabled={isLoading}
+                          disabled={registerMutation.isPending}
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
                           className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                          // onClick={() => setShowPassword(!showPassword)}
-                          // disabled={isLoading}
+                          onClick={() => setShowPassword(!showPassword)}
+                          disabled={registerMutation.isPending}
                         >
-                          {/* {showPassword ? ( */}
-                          <EyeOff size={18} className="text-muted-foreground" />
-                          {/* // ) : ( */}
-                          {/* //   <Eye size={18} className="text-muted-foreground" /> */}
-                          {/* // )} */}
+                          {showPassword ? (
+                            <EyeOff
+                              size={18}
+                              className="text-muted-foreground"
+                            />
+                          ) : (
+                            <Eye size={18} className="text-muted-foreground" />
+                          )}
                         </Button>
                       </div>
                     </FormControl>
@@ -176,25 +179,28 @@ export default function Page() {
                         <Input
                           className="bg-transparent h-10 border border-border/50 rounded"
                           placeholder="Confirm Password"
-                          // type={showConfirmPassword ? "text" : "password"}
+                          type={showConfirmPassword ? "text" : "password"}
                           {...field}
-                          // disabled={isLoading}
+                          disabled={registerMutation.isPending}
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
                           className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                          // onClick={() =>
-                          //   setShowConfirmPassword(!showConfirmPassword)
-                          // }
-                          // disabled={isLoading}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          disabled={registerMutation.isPending}
                         >
-                          {/* {showConfirmPassword ? ( */}
-                          <EyeOff size={18} className="text-muted-foreground" />
-                          {/* // ) : ( */}
-                          {/* // <Eye size={18} className="text-muted-foreground" /> */}
-                          {/* // )} */}
+                          {showConfirmPassword ? (
+                            <EyeOff
+                              size={18}
+                              className="text-muted-foreground"
+                            />
+                          ) : (
+                            <Eye size={18} className="text-muted-foreground" />
+                          )}
                         </Button>
                       </div>
                     </FormControl>
@@ -208,17 +214,16 @@ export default function Page() {
                 type="submit"
                 className="w-full mt-4"
                 size="lg"
-                // disabled={isLoading}
+                disabled={registerMutation.isPending}
               >
-                {/* {isLoading ? "Creating Account..." : "Create Account"} */}
-                Create an account
+                {registerMutation.isPending ? "Loading..." : "Create account"}
               </Button>
 
               {/* Login Link */}
               <div className="text-center text-sm text-muted-foreground pt-2">
                 Already have an account?{" "}
                 <Link
-                  href="/login"
+                  href="/signin"
                   className="text-primary hover:underline font-medium"
                 >
                   Sign in here

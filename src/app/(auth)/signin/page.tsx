@@ -18,30 +18,23 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeOff, MessageCircle } from "lucide-react";
+import { Eye, EyeOff, MessageCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string(),
-});
+import { useAuthentication } from "@/hooks/useAuthForm";
 
 export default function Page() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { handleLogin, showPassword, setShowPassword, formLoginSchema } =
+    useAuthentication();
+
+  const form = useForm<z.infer<typeof formLoginSchema>>({
+    resolver: zodResolver(formLoginSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-  };
 
   return (
     <div className="h-full w-full flex justify-center items-center">
@@ -61,7 +54,10 @@ export default function Page() {
 
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(handleLogin)}
+              className="space-y-4"
+            >
               {/* Username */}
               <FormField
                 control={form.control}
@@ -92,7 +88,7 @@ export default function Page() {
                         <Input
                           className="bg-transparent h-10 border border-border/50 rounded"
                           placeholder="Password"
-                          // type={showPassword ? "text" : "password"}
+                          type={showPassword ? "text" : "password"}
                           {...field}
                           // disabled={isLoading}
                         />
@@ -101,14 +97,17 @@ export default function Page() {
                           variant="ghost"
                           size="icon"
                           className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                          // onClick={() => setShowPassword(!showPassword)}
+                          onClick={() => setShowPassword(!showPassword)}
                           // disabled={isLoading}
                         >
-                          {/* {showPassword ? ( */}
-                          <EyeOff size={18} className="text-muted-foreground" />
-                          {/* // ) : ( */}
-                          {/* //   <Eye size={18} className="text-muted-foreground" /> */}
-                          {/* // )} */}
+                          {showPassword ? (
+                            <EyeOff
+                              size={18}
+                              className="text-muted-foreground"
+                            />
+                          ) : (
+                            <Eye size={18} className="text-muted-foreground" />
+                          )}
                         </Button>
                       </div>
                     </FormControl>
