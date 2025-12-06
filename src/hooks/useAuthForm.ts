@@ -3,7 +3,7 @@ import { useAuth } from "./useAuth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuthStore } from "@/lib/stores/auth.store";
-import { authService } from "@/services/authServices";
+import { authService } from "@/services/authService";
 
 export const formRegisterSchema = z
   .object({
@@ -75,7 +75,7 @@ export function useAuthentication() {
   const { registerMutation, loginMutation } = useAuth();
   const router = useRouter();
 
-  const { setAccessToken, setCurrentUser } = useAuthStore();
+  const { setAccessToken, setCurrentUserId } = useAuthStore();
 
   const handleRegister = (values: z.infer<typeof formRegisterSchema>) => {
     registerMutation.mutate(values, {
@@ -95,12 +95,12 @@ export function useAuthentication() {
         const token = res.data?.token;
         setAccessToken(token);
 
-        // try {
-        //   const userData = await authService.getCurrentUser(token);
-        //   setCurrentUser(userData.data || userData);
-        // } catch (error) {
-        //   console.error("Failed to fetch user data:", error);
-        // }
+        try {
+          const userData = await authService.getCurrentUser(token);
+          setCurrentUserId(userData.data?.id || "");
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
 
         router.push("/");
       },

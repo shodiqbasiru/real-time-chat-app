@@ -13,6 +13,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 const usersData: User[] = [
   {
@@ -281,6 +282,24 @@ export default function Page() {
   const [users, setUsers] = useState<User[]>(usersData);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messageInput, setMessageInput] = useState("");
+
+  const {
+    isConnected,
+    messages: wsMessages,
+    currentChatId,
+    onlineUsers,
+    typingUsers,
+    joinRoom,
+    leaveRoom,
+    sendMessage,
+    messageDelivered,
+    messageRead,
+    sendTyping,
+    clearMessages,
+    newChat,
+    chatUpdate,
+    clearNewChatNotification,
+  } = useWebSocket();
 
   const handleDelete = (userId: number) => {
     setUsers(users.filter((user) => user.id !== userId));

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 
 import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/lib/stores/auth.store";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +17,6 @@ export default function Page() {
   const { getCurrentUserQuery } = useAuth();
 
   const currentUser = getCurrentUserQuery.data?.data;
-  console.log(currentUser);
 
   const recentActivity = [
     {

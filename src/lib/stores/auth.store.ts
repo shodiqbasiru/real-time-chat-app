@@ -5,8 +5,10 @@ import { CurrentUser } from "@/types/user";
 interface AuthState {
   accessToken: string | null;
   currentUser: CurrentUser | null;
+  currentUserId: string | "";
   setAccessToken: (token: string) => void;
-  setCurrentUser: (user: CurrentUser) => void;
+  // setCurrentUser: (user: CurrentUser) => void;
+  setCurrentUserId: (userId: string) => void;
   clearAuth: () => void;
 }
 
@@ -15,8 +17,10 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       accessToken: null,
       currentUser: null,
+      currentUserId: "",
       setAccessToken: (token) => set({ accessToken: token }),
-      setCurrentUser: (user) => set({ currentUser: user }),
+      // setCurrentUser: (user) => set({ currentUser: user }),
+      setCurrentUserId: (userId: string) => set({ currentUserId: userId }),
       clearAuth: () => set({ accessToken: null, currentUser: null }),
     }),
     {
